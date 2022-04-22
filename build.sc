@@ -1,10 +1,12 @@
+import coursier.{MavenRepository, Repository}
 import mill._
+import mill.define.Task
 import mill.scalajslib.ScalaJSModule
 import mill.scalalib._
 
 object TicTacToe extends Module {
-  val ___scalaVersion = "2.13.6"
-  val ___scalaJSVersion = "1.7.0"
+  val ___scalaVersion = "2.13.8"
+  val ___scalaJSVersion = "1.10.0"
 
   object shared extends Module {
     def scalaVersion = ___scalaVersion
@@ -14,7 +16,7 @@ object TicTacToe extends Module {
       override def millSourcePath = shared.millSourcePath
       override def scalaVersion = ___scalaVersion
       override def ivyDeps = Agg(
-        ivy"com.kurgansoft::gbgeShared::0.1.0"
+        ivy"com.kurgansoft::gbgeShared::0.2.0"
       )
     }
 
@@ -31,7 +33,7 @@ object TicTacToe extends Module {
     override def moduleDeps = Seq(shared.jvm)
 
     override def ivyDeps = Agg(
-      ivy"com.kurgansoft::gbgeBackend:0.1.0"
+      ivy"com.kurgansoft::gbgeBackend:0.2.0"
     )
 
     override def mainClass = T(Some("base.StandardLauncher"))
@@ -51,8 +53,14 @@ object TicTacToe extends Module {
     override def moduleDeps = Seq(shared.js)
     override def scalacOptions = Seq("-Xxml:-coalescing")
 
+    override def repositoriesTask: Task[Seq[Repository]] = T.task {
+      super.repositoriesTask() ++ Seq(
+        MavenRepository("https://jitpack.io")
+      )
+    }
+
     override def ivyDeps = Agg(
-      ivy"com.kurgansoft:gbgeUI_sjs1_2.13:0.1.0"
+      ivy"com.kurgansoft:gbgeUI_sjs1_2.13:0.2.0"
     )
   }
 }

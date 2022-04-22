@@ -1,6 +1,6 @@
 package tictactoe.ui
 
-import gbge.client.{ClientEvent, ClientEventHandler}
+import uiglue.{Event, EventLoop}
 import gbge.shared.{FrontendGame, FrontendPlayer, NOT_STARTED}
 import gbge.ui.eps.player.ClientState
 import japgolly.scalajs.react.vdom.TagOf
@@ -41,18 +41,18 @@ object Directives {
     players.find(_.role.contains(role)).map(_.name).getOrElse(FrontendPlayer.MISSING_PLAYERS_NAME)
   }
 
-  def player(clientState: ClientState, commander: ClientEventHandler[ClientEvent]): TagOf[Div] = {
+  def player(clientState: ClientState, eventHandler: EventLoop.EventHandler[Event]): TagOf[Div] = {
     val tttGame = clientState.frontendUniverse.get.game.get.asInstanceOf[ClientTicTacToe]
     val players = clientState.frontendUniverse.get.players
     val you = clientState.you
     val yourRole: Option[TicTacToeRole] = you.flatMap(_.role).flatMap(tttGame.getRoleById)
     if (tttGame.state == NOT_STARTED) {
       div(
-        gbge.ui.display.GeneralDirectives.generalRoleChooserScreen(you.get, players, tttGame, commander),
+        gbge.ui.display.GeneralDirectives.generalRoleChooserScreen(you.get, players, tttGame, eventHandler),
         Option.when(you.exists(_.isAdmin))
         (div(display:="flex", flexDirection:="column", alignItems:="center",
           button(`class`:="btn btn-primary", "Launch game", onClick --> Callback {
-            commander.addAnEventToTheEventQueue(tictactoe.ui.Init)
+            eventHandler(tictactoe.ui.Init)
           })
         ))
       )
@@ -62,11 +62,11 @@ object Directives {
       div(display:="flex", flexDirection:="column", alignItems:="center", backgroundColor:="white", height:="100%",
         div(text(yourRole, tttGame.innerGame.get.phase, tttGame.innerGame.get.winner.flatMap(_.getRole))(players), height:="200px", verticalAlign:="center"),
         div(width:="50%",
-          displayBoard(board, Some(commander))
+          displayBoard(board, Some(eventHandler))
         ),br,br,br,
         Option.when(you.exists(_.isAdmin))
         (button(`class`:="btn btn-primary", "RESTART", onClick --> Callback {
-          commander.addAnEventToTheEventQueue(tictactoe.ui.Restart)
+          eventHandler(tictactoe.ui.Restart)
         })),
         div(position:="absolute", bottom:="15px", right:="15px",
           s"You are: ${you.get.name}",br,
@@ -78,14 +78,14 @@ object Directives {
     }
   }
 
-  def displayBoard(fields: List[Field], commander: Option[ClientEventHandler[ClientEvent]] = None): TagOf[Div] = {
+  def displayBoard(fields: List[Field], optionalEventHandler: Option[EventLoop.EventHandler[FieldClicked]] = None): TagOf[Div] = {
     div(width:="100%", display:= "grid", gridTemplateColumns:="33.3% 33.3% 33.3%",
       (for(field <- fields.zipWithIndex)
-        yield fieldDisplayer(field._1, field._2, commander)).toTagMod
+        yield fieldDisplayer(field._1, field._2, optionalEventHandler)).toTagMod
     )
   }
 
-  def fieldDisplayer(field: Field, index: Int, commander: Option[ClientEventHandler[ClientEvent]] = None): TagOf[Div] = {
+  def fieldDisplayer(field: Field, index: Int, optionalEventHandler: Option[EventLoop.EventHandler[FieldClicked]] = None): TagOf[Div] = {
     val s2 = borderBottom := "solid 15px brown"
     val s3 = borderRight := "solid 15px brown"
     val style =
@@ -99,7 +99,7 @@ object Directives {
         div(field.toString)
       )(fontSize:="xxx-large", textAlign:="center", display:= "flex", flexDirection:= "column", justifyContent:="center")
     )(onClick --> Callback {
-      commander.map(_.addAnEventToTheEventQueue(FieldClicked(index)))
+      optionalEventHandler.map(_(FieldClicked(index)))
     })(style.toTagMod)
   }
 
@@ -195,7 +195,7 @@ object Directives {
     )
   }
 
-  def adminActions(clientState: ClientState, commander: ClientEventHandler[ClientEvent]): TagOf[Div] = {
+  def adminActions(clientState: ClientState, eventHandler : EventLoop.EventHandler[Event]): TagOf[Div] = {
     div()
   }
 }

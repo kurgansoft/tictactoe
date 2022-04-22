@@ -1,6 +1,7 @@
 package tictactoe.ui
 
-import gbge.client._
+import uiglue.{Event, EventLoop}
+import zio.UIO
 import gbge.shared.FrontendUniverse
 import gbge.ui.UIExport
 import gbge.ui.eps.player.ClientState
@@ -10,16 +11,16 @@ import org.scalajs.dom.html.Div
 import tictactoe.shared.ClientTicTacToe
 
 object Export extends UIExport {
-  override val playerDisplayer: (ClientState, ClientEventHandler[ClientEvent]) => TagOf[Div] = Directives.player
-  override val spectatorDisplayer: (SpectatorState, ClientEventHandler[ClientEvent]) => TagOf[Div] = (state, _ ) =>{
+  override val playerDisplayer: (ClientState, EventLoop.EventHandler[Event]) => TagOf[Div] = Directives.player
+  override val spectatorDisplayer: (SpectatorState, EventLoop.EventHandler[Event]) => TagOf[Div] = (state, _ ) =>{
     val fu = state.frontendUniverse.get
     val game = fu.game.get
     Directives.spectator(game, fu.players)
   }
-  override val handleNewFU: (ClientState, FrontendUniverse) => (ClientState, ClientResult) = (clientState, fu) => {
+  override val handleNewFU: (ClientState, FrontendUniverse) => (ClientState, EventLoop.EventHandler[Event] => UIO[List[Event]]) = (clientState, fu) => {
     val cttt = fu.game.get.asInstanceOf[ClientTicTacToe]
     val yr = clientState.you.flatMap(_.role.flatMap(cttt.getRoleById))
-    (clientState.copy(frontendUniverse = Some(fu), offlineState = OfflineTicTacToeState(cttt, yr)), OK)
+    (clientState.copy(frontendUniverse = Some(fu), offlineState = OfflineTicTacToeState(cttt, yr)), _ => UIO.succeed(List.empty))
   }
-  override val adminDisplayer: (ClientState, ClientEventHandler[ClientEvent]) => TagOf[Div] = Directives.adminActions
+  override val adminDisplayer: (ClientState, EventLoop.EventHandler[Event]) => TagOf[Div] = Directives.adminActions
 }

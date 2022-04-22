@@ -13,5 +13,5 @@ object CustomLauncher extends CustomServer {
     assert(a._1.frontendGame == a._2)
   })
 
-  override val jsLocation: Option[String] = Some("out/TicTacToe/ui/fastOpt/dest")
+  override val jsLocation: Option[String] = Some("out/TicTacToe/ui/fastOpt.dest")
 }
