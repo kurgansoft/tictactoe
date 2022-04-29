@@ -8,6 +8,8 @@ object TicTacToe extends Module {
   val ___scalaVersion = "2.13.8"
   val ___scalaJSVersion = "1.10.0"
 
+  val gbgeVersion: String = "0.2.1"
+
   object shared extends Module {
     def scalaVersion = ___scalaVersion
     def scalaJSVersion = ___scalaJSVersion
@@ -16,7 +18,7 @@ object TicTacToe extends Module {
       override def millSourcePath = shared.millSourcePath
       override def scalaVersion = ___scalaVersion
       override def ivyDeps = Agg(
-        ivy"com.kurgansoft::gbgeShared::0.2.0"
+        ivy"com.kurgansoft::gbgeShared::$gbgeVersion"
       )
     }
 
@@ -33,7 +35,7 @@ object TicTacToe extends Module {
     override def moduleDeps = Seq(shared.jvm)
 
     override def ivyDeps = Agg(
-      ivy"com.kurgansoft::gbgeBackend:0.2.0"
+      ivy"com.kurgansoft::gbgeBackend:$gbgeVersion"
     )
 
     override def mainClass = T(Some("base.StandardLauncher"))
@@ -60,7 +62,7 @@ object TicTacToe extends Module {
     }
 
     override def ivyDeps = Agg(
-      ivy"com.kurgansoft:gbgeUI_sjs1_2.13:0.2.0"
+      ivy"com.kurgansoft:gbgeUI_sjs1_2.13:$gbgeVersion"
     )
   }
 }
