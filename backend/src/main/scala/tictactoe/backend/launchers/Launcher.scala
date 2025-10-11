@@ -8,11 +8,7 @@ object Launcher extends ZIOAppDefault {
 
     private val games: Seq[BackendGameProps[_, _]] = Seq(BackendTicTacToeProps)
 
-    private val gl = GenericLauncher(
-      games,
-      ???,
-      ???
-    )
+    private val gl = GenericLauncher(games)
 
     override def run: ZIO[Scope, Any, Unit] = gl.launch
 
