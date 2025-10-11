@@ -24,11 +24,9 @@ object ClientTicTacToeProps extends TicTacToeProps with ClientGameProps[TicTacTo
   override val handleNewFU: (ClientState, FrontendUniverse) => (ClientState, EventHandler[Event] => UIO[List[Event]]) =
     (clientState, fu) => {
       val cttt = fu.game.get.asInstanceOf[ClientTicTacToe]
-      val yr = clientState.you.map(pair => {
-        val roleId = pair._1
-        TicTacToeRole.fromRoleId(roleId)
-      })
-      (clientState.copy(frontendUniverse = Some(fu), offlineState = OfflineTicTacToeState(cttt, yr)), _ => ZIO.succeed(List.empty))
+      val you = clientState.player
+      val yourRole: Option[TicTacToeRole] = you.flatMap(_.role).flatMap(cttt.getRoleById)
+      (clientState.copy(frontendUniverse = Some(fu), offlineState = OfflineTicTacToeState(cttt, yourRole)), _ => ZIO.succeed(List.empty))
     }
     
   override val adminDisplayer: (ClientState, EventHandler[Event]) => TagOf[Div] =
