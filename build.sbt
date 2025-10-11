@@ -21,6 +21,30 @@ lazy val common = crossProject(JSPlatform, JVMPlatform).in(file("common")).
 
 lazy val backend = project.in(file("backend")).settings(
   name := "backend",
+  mainClass := Some("tictactoe.backend.launchers.Launcher"),
+  assemblyMergeStrategy := {
+    case x if Assembly.isConfigFile(x) =>
+      MergeStrategy.concat
+    case PathList(ps @ _*) if Assembly.isReadme(ps.last) || Assembly.isLicenseFile(ps.last) =>
+      MergeStrategy.rename
+    case PathList("META-INF", xs @ _*) =>
+      xs map {_.toLowerCase} match {
+        case "manifest.mf" :: Nil | "index.list" :: Nil | "dependencies" :: Nil =>
+          MergeStrategy.discard
+        case ps @ x :: xs if ps.last.endsWith(".sf") || ps.last.endsWith(".dsa") =>
+          MergeStrategy.discard
+        case "plexus" :: xs =>
+          MergeStrategy.discard
+        case "services" :: xs =>
+          MergeStrategy.filterDistinctLines
+        case "spring.schemas" :: Nil | "spring.handlers" :: Nil =>
+          MergeStrategy.filterDistinctLines
+        case _ => MergeStrategy.first
+      }
+    case other if other.endsWith(".sjsir") || other.contains("_sjs1") =>
+      MergeStrategy.discard
+    case _ => MergeStrategy.first
+  }
 ).dependsOn(common.jvm)
 
 lazy val ui = project.in(file("ui")).settings(

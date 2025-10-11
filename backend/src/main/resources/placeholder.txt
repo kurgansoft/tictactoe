@@ -1,0 +1,1 @@
+File is only here to make sure that resources folder exists in git.
