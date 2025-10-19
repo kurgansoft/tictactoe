@@ -1,7 +1,6 @@
-
 ThisBuild / scalaVersion := "3.3.5"
 
-val gbgeCommitHash = "b2b0a96c0b7bf5aa404ac083f6f846a1e30d5cb1"
+val gbgeCommitHash = "d4362343824051f2c5f1bd75f8be16f4c832ddee"
 
 lazy val common = crossProject(JSPlatform, JVMPlatform).in(file("common")).
   settings(
