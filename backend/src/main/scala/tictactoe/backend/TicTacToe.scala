@@ -11,16 +11,16 @@ case class TicTacToe(innerTicTacToe: Option[InnerTicTacToe] = None) extends Abst
 
   override val noOfPlayers: Int = 2
 
-  override def reduce(gameAction: GameAction, invoker: Player): Either[Failure, (TicTacToe, IO[Failure, Seq[Action]])] =
+  override def reduce(gameAction: GameAction, invoker: Player): Either[Failure, (TicTacToe, IO[Nothing, Option[Action]])] =
     gameAction match {
       case ticTacToeAction: TicTacToeAction => reduce0(ticTacToeAction, invoker.role)
       case _ => Left(GeneralFailure("Provided action cannot be handled by this game."))
     }
 
-  private def reduce0(action: TicTacToeAction, role: Option[Int]): Either[Failure, (TicTacToe, IO[Failure, Seq[Action]])] = action match {
+  private def reduce0(action: TicTacToeAction, role: Option[Int]): Either[Failure, (TicTacToe, IO[Nothing, Option[Action]])] = action match {
     case Init =>
       if (state == NOT_STARTED) {
-        Right((this.copy(innerTicTacToe = Some(InnerTicTacToe())), ZIO.succeed(Seq.empty)))
+        Right((this.copy(innerTicTacToe = Some(InnerTicTacToe())), ZIO.none))
       } else {
         Left(GeneralFailure("Cannot init; game is started already."))
       }
@@ -28,7 +28,7 @@ case class TicTacToe(innerTicTacToe: Option[InnerTicTacToe] = None) extends Abst
       if (state == IN_PROGRESS) {
         innerTicTacToe.get.reduce(ticTacToeAction, role) match {
           case Left(failure) => Left(failure)
-          case Right(innerTicTacToeTransformed) => Right((this.copy(innerTicTacToe = Some(innerTicTacToeTransformed)), ZIO.succeed(Seq.empty))) 
+          case Right(innerTicTacToeTransformed) => Right((this.copy(innerTicTacToe = Some(innerTicTacToeTransformed)), ZIO.none)) 
         }
       } else {
         Left(GeneralFailure("Incorrect phase"))
