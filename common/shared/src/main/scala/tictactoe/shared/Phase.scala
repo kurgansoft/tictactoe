@@ -1,6 +1,7 @@
 package tictactoe.shared
 
-import zio.json.{DeriveJsonCodec, JsonCodec}
+import zio.json.JsonCodec
+import zio.schema.{DeriveSchema, Schema}
 
 sealed trait Phase {
   val sign: Field
@@ -24,5 +25,7 @@ case object GameOver extends Phase {
 }
 
 object Phase {
-  implicit val codec: JsonCodec[Phase] = DeriveJsonCodec.gen[Phase]
+  implicit val schema: Schema[Phase] = DeriveSchema.gen[Phase]
+  implicit val codec: JsonCodec[Phase] =
+    zio.schema.codec.JsonCodec.jsonCodec(schema)
 }
