@@ -4,7 +4,7 @@ This is the traditional TicTacToe game implemented with the [gbge](https://githu
 
 # How to play
 
-* Make sure you have JRE >= 11 installed
+* Make sure you have JRE >= 17 installed
 * Download the latest jar file from the releases section.
 * The command ```java -jar tictactoe.jar``` will launch the game server with default options:
   * Join the game with url: http://localhost:8080 

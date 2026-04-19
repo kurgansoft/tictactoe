@@ -1,6 +1,7 @@
 package tictactoe.backend.launchers
 
-import gbge.backend.{BackendGameProps, GameConfig, GenericLauncher}
+import gbge.backend.config.GameConfig
+import gbge.backend.{BackendGameProps, GenericLauncher}
 import tictactoe.backend.BackendTicTacToeProps
 import zio.{ConfigProvider, Runtime, Scope, ZIO, ZIOAppArgs, ZIOAppDefault, ZLayer}
 
