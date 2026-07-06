@@ -43,7 +43,7 @@ object Directives {
   def player(clientState: ClientState, eventHandler: EventLoop.EventHandler[Event]): TagOf[Div] = {
     val tttGame = clientState.frontendUniverse.get.game.get.asInstanceOf[ClientTicTacToe]
     val players = clientState.frontendUniverse.get.players
-    val you = clientState.player
+    val you = clientState.playerMaybe
     val yourRole: Option[TicTacToeRole] = you.flatMap(_.role).flatMap(tttGame.getRoleById)
     if (tttGame.state == NOT_STARTED) {
       div(

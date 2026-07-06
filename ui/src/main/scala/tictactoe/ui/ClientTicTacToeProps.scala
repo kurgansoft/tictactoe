@@ -24,7 +24,7 @@ object ClientTicTacToeProps extends TicTacToeProps with ClientGameProps[TicTacTo
   override val handleNewFU: (ClientState, FrontendUniverse) => (ClientState, EventHandler[Event] => UIO[List[Event]]) =
     (clientState, fu) => {
       val cttt = fu.game.get.asInstanceOf[ClientTicTacToe]
-      val you = clientState.player
+      val you = clientState.playerMaybe
       val yourRole: Option[TicTacToeRole] = you.flatMap(_.role).flatMap(cttt.getRoleById)
       (clientState.copy(frontendUniverse = Some(fu), offlineState = OfflineTicTacToeState(cttt, yourRole)), _ => ZIO.succeed(List.empty))
     }
