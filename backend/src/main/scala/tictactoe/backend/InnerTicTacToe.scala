@@ -3,9 +3,14 @@ package tictactoe.backend
 import gbge.backend.GeneralFailure
 import tictactoe.shared.*
 
-case class InnerTicTacToe(override val fields: List[Field] = List.fill(9)(EMPTY), override val phase: Phase = TurnOfX)
-  extends AbstractInnerTicTacToe(fields, phase) {
-  def reduce(action: TicTacToeAction, role: Option[Int]): Either[GeneralFailure, InnerTicTacToe] = action match {
+case class InnerTicTacToe(
+    override val fields: List[Field] = List.fill(9)(EMPTY),
+    override val phase: Phase = TurnOfX
+) extends AbstractInnerTicTacToe(fields, phase) {
+  def reduce(
+      action: TicTacToeAction,
+      role: Option[Int]
+  ): Either[GeneralFailure, InnerTicTacToe] = action match {
     case Restart =>
       Right(InnerTicTacToe())
     case TakeMark(index) =>
@@ -13,7 +18,7 @@ case class InnerTicTacToe(override val fields: List[Field] = List.fill(9)(EMPTY)
         phase match {
           case TurnOfX => 1
           case TurnOfO => 2
-          case _ => 0
+          case _       => 0
         }
       }
 

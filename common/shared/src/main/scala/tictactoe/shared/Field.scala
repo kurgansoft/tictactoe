@@ -20,4 +20,3 @@ case object EMPTY extends Field {
   override val getRole: Option[TicTacToeRole] = None
   override val getRoleNumber: Option[Int] = None
 }
-

@@ -5,7 +5,8 @@ import zio.blocks.schema.Schema
 import zio.blocks.schema.json.JsonCodec
 
 sealed trait TicTacToeAction extends GameAction {
-  override lazy val asJsonString: String = TicTacToeAction.jsonCodec.encodeToString(this)
+  override lazy val asJsonString: String =
+    TicTacToeAction.jsonCodec.encodeToString(this)
 }
 
 object TicTacToeAction {

@@ -10,6 +10,9 @@ import scala.scalajs.js.annotation.JSExportTopLevel
 
 @JSExportTopLevel("ep")
 object UILauncher extends EntryPoint {
-  gbge.shared.RG.gameCodecs = List(ClientTicTacToe.jsonCodec.asInstanceOf[JsonCodec[FrontendGame[? <: GameAction]]])
+  gbge.shared.RG.gameCodecs = List(
+    ClientTicTacToe.jsonCodec
+      .asInstanceOf[JsonCodec[FrontendGame[? <: GameAction]]]
+  )
   gbge.ui.RG.registeredGames = List(ClientTicTacToeProps)
 }

@@ -6,29 +6,49 @@ import gbge.ui.eps.player.ClientState
 import gbge.ui.eps.spectator.SpectatorState
 import japgolly.scalajs.react.vdom.TagOf
 import org.scalajs.dom.html.Div
-import tictactoe.shared.{ClientTicTacToe, TicTacToeAction, TicTacToeProps, TicTacToeRole}
+import tictactoe.shared.{
+  ClientTicTacToe,
+  TicTacToeAction,
+  TicTacToeProps,
+  TicTacToeRole
+}
 import uiglue.Event
 import uiglue.EventLoop.EventHandler
 import zio.{UIO, ZIO}
 
-object ClientTicTacToeProps extends TicTacToeProps with ClientGameProps[TicTacToeAction, ClientTicTacToe] {
-  override val playerDisplayer: (ClientState, EventHandler[Event]) => TagOf[Div] =
+object ClientTicTacToeProps
+    extends TicTacToeProps
+    with ClientGameProps[TicTacToeAction, ClientTicTacToe] {
+  override val playerDisplayer
+      : (ClientState, EventHandler[Event]) => TagOf[Div] =
     Directives.player
-    
-  override val spectatorDisplayer: (SpectatorState, EventHandler[Event]) => TagOf[Div] = (state, _ ) => {
+
+  override val spectatorDisplayer
+      : (SpectatorState, EventHandler[Event]) => TagOf[Div] = (state, _) => {
     val fu = state.frontendUniverse.get
     val game = fu.game.get
     Directives.spectator(game, fu.players)
   }
 
-  override val handleNewFU: (ClientState, FrontendUniverse) => (ClientState, EventHandler[Event] => UIO[List[Event]]) =
+  override val handleNewFU: (ClientState, FrontendUniverse) => (
+      ClientState,
+      EventHandler[Event] => UIO[List[Event]]
+  ) =
     (clientState, fu) => {
       val cttt = fu.game.get.asInstanceOf[ClientTicTacToe]
       val you = clientState.playerMaybe
-      val yourRole: Option[TicTacToeRole] = you.flatMap(_.role).flatMap(cttt.getRoleById)
-      (clientState.copy(frontendUniverse = Some(fu), offlineState = OfflineTicTacToeState(cttt, yourRole)), _ => ZIO.succeed(List.empty))
+      val yourRole: Option[TicTacToeRole] =
+        you.flatMap(_.role).flatMap(cttt.getRoleById)
+      (
+        clientState.copy(
+          frontendUniverse = Some(fu),
+          offlineState = OfflineTicTacToeState(cttt, yourRole)
+        ),
+        _ => ZIO.succeed(List.empty)
+      )
     }
-    
-  override val adminDisplayer: (ClientState, EventHandler[Event]) => TagOf[Div] =
+
+  override val adminDisplayer
+      : (ClientState, EventHandler[Event]) => TagOf[Div] =
     Directives.adminActions
 }
