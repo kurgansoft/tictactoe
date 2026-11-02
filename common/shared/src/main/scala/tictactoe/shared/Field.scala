@@ -1,12 +1,10 @@
 package tictactoe.shared
 
-import zio.json.JsonCodec
-import zio.schema.{DeriveSchema, Schema}
-
 sealed trait Field {
   val getRole: Option[TicTacToeRole]
   val getRoleNumber: Option[Int]
 }
+
 case object O extends Field {
   override def toString: String = "O"
   override val getRole: Option[TicTacToeRole] = Some(RoleO)
@@ -23,8 +21,3 @@ case object EMPTY extends Field {
   override val getRoleNumber: Option[Int] = None
 }
 
-object Field {
-  implicit val schema: Schema[Field] = DeriveSchema.gen[Field]
-  implicit val codec: JsonCodec[Field] =
-    zio.schema.codec.JsonCodec.jsonCodec(schema)
-}

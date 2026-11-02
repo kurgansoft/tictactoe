@@ -102,7 +102,7 @@ object Directives {
     })(style.toTagMod)
   }
 
-  def spectator(frontendGame: FrontendGame[_], players: List[FrontendPlayer]): TagOf[Div] = {
+  def spectator(frontendGame: FrontendGame[?], players: List[FrontendPlayer]): TagOf[Div] = {
     val ticTacToe = frontendGame.asInstanceOf[ClientTicTacToe]
     if (ticTacToe.state == NOT_STARTED) {
       div(position:="absolute", top:="0px", bottom:="0px", left:="0px", right:="0px",

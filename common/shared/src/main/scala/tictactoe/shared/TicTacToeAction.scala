@@ -1,18 +1,15 @@
 package tictactoe.shared
 
 import gbge.shared.actions.GameAction
-import zio.json.{JsonCodec, EncoderOps}
-import zio.schema.{DeriveSchema, Schema}
+import zio.blocks.schema.Schema
+import zio.blocks.schema.json.JsonCodec
 
 sealed trait TicTacToeAction extends GameAction {
-  override def convertToJson(): String =
-    this.toJson
+  override lazy val asJsonString: String = TicTacToeAction.jsonCodec.encodeToString(this)
 }
 
 object TicTacToeAction {
-  implicit val schema: Schema[TicTacToeAction] = DeriveSchema.gen
-  implicit val codec: JsonCodec[TicTacToeAction] =
-    zio.schema.codec.JsonCodec.jsonCodec(schema)
+  val jsonCodec: JsonCodec[TicTacToeAction] = Schema.derived.jsonCodec
 }
 
 case object Init extends TicTacToeAction {

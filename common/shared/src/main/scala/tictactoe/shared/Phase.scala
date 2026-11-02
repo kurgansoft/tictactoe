@@ -1,8 +1,5 @@
 package tictactoe.shared
 
-import zio.json.JsonCodec
-import zio.schema.{DeriveSchema, Schema}
-
 sealed trait Phase {
   val sign: Field
   val role: Option[TicTacToeRole]
@@ -22,10 +19,4 @@ case object GameOver extends Phase {
   override val sign: Field = EMPTY
   override val nextPhase: Phase = GameOver
   override val role: Option[TicTacToeRole] = None
-}
-
-object Phase {
-  implicit val schema: Schema[Phase] = DeriveSchema.gen[Phase]
-  implicit val codec: JsonCodec[Phase] =
-    zio.schema.codec.JsonCodec.jsonCodec(schema)
 }

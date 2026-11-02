@@ -7,7 +7,7 @@ import zio.{ConfigProvider, Runtime, Scope, ZIO, ZIOAppArgs, ZIOAppDefault, ZLay
 
 object Launcher extends ZIOAppDefault {
 
-  private val games: Seq[BackendGameProps[_, _]] = Seq(BackendTicTacToeProps)
+  private val games: Seq[BackendGameProps[?, ?]] = Seq(BackendTicTacToeProps)
 
   private val gl = GenericLauncher(games)
 
